@@ -11,22 +11,25 @@ import java.util.HashSet;
 import trabalho2.model.automato.Automaton;
 import trabalho2.model.automato.State;
 import trabalho2.model.automato.Transitions;
-
+    import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 /**
  *
  * @author nathan
  */
 public class AnalisadorLexico {
     private Automaton AUTOMATO;
+    final Pattern reservedpattern = Pattern.compile("if|them|else|while|break|do|true|false|basic");
+    final Pattern operatorsPattern = Pattern.compile("\\{|\\}|\\[|\\]|;|={1,2}|\\(|\\)|\\|{1,2}|&{2}|<|>|\\+|-|\\/|\\*");
     public AnalisadorLexico() {
         AUTOMATO = createAnalisisAutomaton();
     }
-
-    public enum TokemType {
+    
+    public enum TokenType {
         ID, RESERVED, OPERATOR, ERROR;
 
-        public static TokemType get(String typeName) {
-            for (TokemType categoria : TokemType.values()) {
+        public static TokenType get(String typeName) {
+            for (TokenType categoria : TokenType.values()) {
                 if (typeName.equals(categoria.toString())) {
                     return categoria;
                 }
@@ -35,6 +38,19 @@ public class AnalisadorLexico {
             return ERROR;
         }
     }
+    
+    private TokenType checkTokenType(String token) {
+        Matcher reservedMatcher = reservedpattern.matcher(token);
+        Matcher operatorsMatcher = operatorsPattern.matcher(token);
+        if (reservedMatcher.find()) {
+            return TokenType.RESERVED;
+        } else if (operatorsMatcher.find()) {
+            return TokenType.OPERATOR;
+        }
+        
+        return TokenType.ID;
+    }
+    
     private Automaton createAnalisisAutomaton() {
         ArrayList<State> states = new ArrayList<State>();
         ArrayList<Character> alphabet = new ArrayList<>();
@@ -62,32 +78,32 @@ public class AnalisadorLexico {
 
     public void analise(String sourceCode) {
         String[] conjuntoDePalavras = sourceCode.trim().split(" ");
-        HashMap<TokemType, HashSet<String>> tabelaDeTokens = new HashMap<TokemType, HashSet<String>>() {
+        HashMap<TokenType, HashSet<String>> tabelaDeTokens = new HashMap<TokenType, HashSet<String>>() {
             {
-                for (TokemType categoria : TokemType.values()) {
+                for (TokenType categoria : TokenType.values()) {
                     put(categoria, new HashSet<String>());
                 }
             }
         };
         for (String palavra : conjuntoDePalavras) {
             System.err.println(palavra);
-            tabelaDeTokens.get(doLexAnalisis(AUTOMATO.getInitialState(), palavra)).add(palavra);
+            tabelaDeTokens.get(doLexAnalisis(AUTOMATO.getInitialState(), palavra, palavra)).add(palavra);
         }
         System.out.println(tabelaDeTokens);
     }
     
-    public TokemType doLexAnalisis (State actual, String word) {
+    public TokenType doLexAnalisis (State actual, String word, String initialWord) {
         if (AUTOMATO.getFinalStates().contains(actual)){
-            return TokemType.RESERVED;
+            return checkTokenType(initialWord);
         }
-        
-        State estadoDestino = AUTOMATO.getNextStates(actual, word.charAt(0)).get(0);
-        System.out.println(estadoDestino);
-        if (estadoDestino != null) {
-            return doLexAnalisis(estadoDestino, word.substring(1));
-        }  
-        
-        return TokemType.ERROR;
+        try {
+            State estadoDestino = AUTOMATO.getNextStates(actual, word.charAt(0)).get(0);
+            System.out.println(estadoDestino);
+            if (estadoDestino != null) {
+                return doLexAnalisis(estadoDestino, word.substring(1), initialWord);
+            } 
+        } catch(Exception e) {}
+        return TokenType.ERROR;
     }
 
     public String getNextToken() {

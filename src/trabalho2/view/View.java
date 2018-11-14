@@ -23,6 +23,10 @@ public class View extends javax.swing.JFrame {
         this.app = app;
         initComponents();
     }
+    
+    public String getSourceCode() {
+        return sourceCodeArea.getText();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -36,7 +40,7 @@ public class View extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        sourceCodeArea = new javax.swing.JTextArea();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -57,9 +61,10 @@ public class View extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
+        sourceCodeArea.setColumns(20);
+        sourceCodeArea.setRows(5);
+        sourceCodeArea.setText("if a");
+        jScrollPane2.setViewportView(sourceCodeArea);
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
@@ -171,6 +176,6 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea sourceCodeArea;
     // End of variables declaration//GEN-END:variables
 }

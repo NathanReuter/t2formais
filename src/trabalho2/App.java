@@ -10,16 +10,23 @@ package trabalho2;
  * @author nathan
  */
 
+import trabalho2.model.*;
 import trabalho2.view.View;
 public class App {
 
     private View view;
+    private AnalisadorLexico lex;
+    private AnalisadorSintatico parser;
     public static void main(String[] args) {
        new App();
     }
     
     public App() {
         this.view = new View(this);
+        lex = new AnalisadorLexico();
+        parser = new AnalisadorSintatico(lex);
+        parser.parse(view.getSourceCode());
+        
         this.view.show(true);
     }
 }
