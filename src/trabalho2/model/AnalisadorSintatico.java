@@ -10,5 +10,13 @@ package trabalho2.model;
  * @author nathan
  */
 public class AnalisadorSintatico {
+    private AnalisadorLexico lex;
     
+    public AnalisadorSintatico(AnalisadorLexico lex) {
+        this.lex = lex;
+    }
+    
+    public void parse(String sourceCode) {
+        lex.analise(sourceCode);
+    }
 }
