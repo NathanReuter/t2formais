@@ -62,12 +62,14 @@ public class AnalisadorLexico {
     private Automaton createAnalisisAutomaton() {
 //        PARA REGEX if|=|==|(a|b|c|d)+
 // https://cyberzhg.github.io/toolbox/min_dfa?regex=aWZ8PXw9PXwoYWJjZCkr
+//a ordem quem eu os states são inseridos é relevante.
         ArrayList<State> states = new ArrayList<>();
         ArrayList<Character> alphabet = new ArrayList<>();
         Transitions transitions = new Transitions();
         State initialState;
         ArrayList<State> finalState = new ArrayList<>();
         String id = "Automato";
+        
         State[] reservada_id = new State[23];
         for (int i = 0; i < reservada_id.length; i++) {
             reservada_id[i] = new State("Q" + (i + 1));
@@ -86,47 +88,63 @@ public class AnalisadorLexico {
         State num = new State("Q25");
         states.add(num);
         states.add(new State("Q26"));
-        
+        //final num
         finalState.add(num);
+        //final real
         finalState.add(real);
         /*
         numeros/reais Q24-26
         */
+        states.add(new State("Q27"));
+        State and = new State("Q28");
+        states.add(and);
+        //final and
+        finalState.add(and);
+        /*
+        && Q27-Q28
+        */
+        states.add(new State("Q29"));
+        State or = new State("Q30");
+        states.add(or);
+        //final or
+        finalState.add(or);
+        /*
+        || Q29-Q30
+        */
+        State op_block = new State("Q31");
+        states.add(op_block);
+        State cl_block = new State("Q32");
+        states.add(cl_block);
+        //final op-cl-block
+        finalState.add(op_block);
+        finalState.add(cl_block);
+        /*
+        {,} Q31-Q32
+        */
+        State op_bracket = new State("Q33");
+        states.add(op_bracket);
+        State cl_bracket  = new State("Q34");
+        states.add(cl_bracket);
+        //final op-cl-bracket
+        finalState.add(op_bracket);
+        finalState.add(cl_bracket);
+        /*
+        [,] Q33-Q34
+        */
+        State op_parentheses = new State("Q35");
+        states.add(op_parentheses);
+        State cl_parentheses  = new State("Q36");
+        states.add(cl_parentheses);
+        //final op-cl-parentheses
+        finalState.add(op_parentheses);
+        finalState.add(cl_parentheses);
+        /*
+        (,) Q35-Q36
+        */
+        
         alphabet = genAlphabet();
         transitions= genTransitions(states);
         int a = 1;
-        /* State A = new State("A");
-        State B = new State("B");
-        State C = new State("C");
-        State D = new State("D");
-        State E = new State("E");
-        states.add(A);
-        states.add(B);
-        states.add(C);
-        alphabet.add('=');
-        alphabet.add('a');
-        alphabet.add('b');
-        alphabet.add('c');
-        alphabet.add('d');
-        alphabet.add('i');
-        alphabet.add('f');
-        initialState = A;
-        finalState.add(B);
-        finalState.add(C);
-        finalState.add(E);
-        transitions.addTransition(A, '=', B);
-        transitions.addTransition(A, 'a', C);
-        transitions.addTransition(A, 'b', C);
-        transitions.addTransition(A, 'c', C);
-        transitions.addTransition(A, 'd', C);
-        transitions.addTransition(A, 'i', D);
-        transitions.addTransition(B, '=', E);
-        transitions.addTransition(C, 'a', C);
-        transitions.addTransition(C, 'b', C);
-        transitions.addTransition(C, 'c', C);
-        transitions.addTransition(C, 'd', C);
-        transitions.addTransition(D, 'f', E);
-         */
         return new Automaton(states, alphabet, transitions, initialState, finalState, id);
     }
 
@@ -164,7 +182,24 @@ public class AnalisadorLexico {
         alphabet.add('9');
         alphabet.add('.');
         //
-        
+        //and
+        alphabet.add('&');
+        //
+        //or
+        alphabet.add('|');
+        //
+        //op-cl-block
+        alphabet.add('{');
+        alphabet.add('}');
+        //
+        //op-cl-bracket
+        alphabet.add('[');
+        alphabet.add(']');
+        //
+        //op-cl-parentheses
+        alphabet.add('(');
+        alphabet.add(')');
+        //
         return alphabet;
     }
 
@@ -274,7 +309,28 @@ public class AnalisadorLexico {
         transitions.addTransition(states.get(23), '7', states.get(23));
         transitions.addTransition(states.get(23), '8', states.get(23));
         transitions.addTransition(states.get(23), '9', states.get(23));
-
+        //
+        //and
+        transitions.addTransition(states.get(0), '&', states.get(26));
+        transitions.addTransition(states.get(26), '&', states.get(27));
+        //
+        
+        //or
+        transitions.addTransition(states.get(0), '|', states.get(28));
+        transitions.addTransition(states.get(28), '|', states.get(29));
+        //
+        
+        //op-cl-block
+        transitions.addTransition(states.get(0), '{', states.get(30));
+        transitions.addTransition(states.get(0), '}', states.get(31));
+        //
+        //op-cl-bracket
+        transitions.addTransition(states.get(0), '[', states.get(32));
+        transitions.addTransition(states.get(0), ']', states.get(33));
+        //
+        //op-cl-parentheses
+        transitions.addTransition(states.get(0), '(', states.get(34));
+        transitions.addTransition(states.get(0), ')', states.get(35));
         //
         return transitions;
     }
