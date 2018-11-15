@@ -81,6 +81,17 @@ public class AnalisadorLexico {
         /*
         reservadas e id Q1-Q23
         */
+        State real = new State("Q24");
+        states.add(real);
+        State num = new State("Q25");
+        states.add(num);
+        states.add(new State("Q26"));
+        
+        finalState.add(num);
+        finalState.add(real);
+        /*
+        numeros/reais Q24-26
+        */
         alphabet = genAlphabet();
         transitions= genTransitions(states);
         int a = 1;
@@ -140,6 +151,20 @@ public class AnalisadorLexico {
         alphabet.add('u');
         alphabet.add('w');
         //
+        //real/num
+        alphabet.add('0');
+        alphabet.add('1');
+        alphabet.add('2');
+        alphabet.add('3');
+        alphabet.add('4');
+        alphabet.add('5');
+        alphabet.add('6');
+        alphabet.add('7');
+        alphabet.add('8');
+        alphabet.add('9');
+        alphabet.add('.');
+        //
+        
         return alphabet;
     }
 
@@ -203,8 +228,54 @@ public class AnalisadorLexico {
         transitions.addTransition(states.get(21), 'i', states.get(5));
         
         transitions.addTransition(states.get(22), 'a', states.get(6));
-        
         //end reservados
+        //numeros/ reais
+        transitions.addTransition(states.get(0), '0', states.get(24));
+        transitions.addTransition(states.get(0), '1', states.get(24));
+        transitions.addTransition(states.get(0), '2', states.get(24));
+        transitions.addTransition(states.get(0), '3', states.get(24));
+        transitions.addTransition(states.get(0), '4', states.get(24));
+        transitions.addTransition(states.get(0), '5', states.get(24));
+        transitions.addTransition(states.get(0), '6', states.get(24));
+        transitions.addTransition(states.get(0), '7', states.get(24));
+        transitions.addTransition(states.get(0), '8', states.get(24));
+        transitions.addTransition(states.get(0), '9', states.get(24));
+        
+        transitions.addTransition(states.get(24), '0', states.get(24));
+        transitions.addTransition(states.get(24), '1', states.get(24));
+        transitions.addTransition(states.get(24), '2', states.get(24));
+        transitions.addTransition(states.get(24), '3', states.get(24));
+        transitions.addTransition(states.get(24), '4', states.get(24));
+        transitions.addTransition(states.get(24), '5', states.get(24));
+        transitions.addTransition(states.get(24), '6', states.get(24));
+        transitions.addTransition(states.get(24), '7', states.get(24));
+        transitions.addTransition(states.get(24), '8', states.get(24));
+        transitions.addTransition(states.get(24), '9', states.get(24));
+        transitions.addTransition(states.get(24), '.', states.get(25));
+        
+        transitions.addTransition(states.get(25), '0', states.get(23));
+        transitions.addTransition(states.get(25), '1', states.get(23));
+        transitions.addTransition(states.get(25), '2', states.get(23));
+        transitions.addTransition(states.get(25), '3', states.get(23));
+        transitions.addTransition(states.get(25), '4', states.get(23));
+        transitions.addTransition(states.get(25), '5', states.get(23));
+        transitions.addTransition(states.get(25), '6', states.get(23));
+        transitions.addTransition(states.get(25), '7', states.get(23));
+        transitions.addTransition(states.get(25), '8', states.get(23));
+        transitions.addTransition(states.get(25), '9', states.get(23));
+        
+        transitions.addTransition(states.get(23), '0', states.get(23));
+        transitions.addTransition(states.get(23), '1', states.get(23));
+        transitions.addTransition(states.get(23), '2', states.get(23));
+        transitions.addTransition(states.get(23), '3', states.get(23));
+        transitions.addTransition(states.get(23), '4', states.get(23));
+        transitions.addTransition(states.get(23), '5', states.get(23));
+        transitions.addTransition(states.get(23), '6', states.get(23));
+        transitions.addTransition(states.get(23), '7', states.get(23));
+        transitions.addTransition(states.get(23), '8', states.get(23));
+        transitions.addTransition(states.get(23), '9', states.get(23));
+
+        //
         return transitions;
     }
 
