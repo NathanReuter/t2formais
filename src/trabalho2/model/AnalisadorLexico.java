@@ -21,12 +21,13 @@ public class AnalisadorLexico {
     private Automaton AUTOMATO;
     final Pattern reservedpattern = Pattern.compile("if|them|else|while|break|do|true|false|basic");
     final Pattern operatorsPattern = Pattern.compile("\\{|\\}|\\[|\\]|;|={1,2}|\\(|\\)|\\|{1,2}|&{2}|<|>|\\+|-|\\/|\\*");
+    final Pattern numbersPattern = Pattern.compile("[0-9]+");
     public AnalisadorLexico() {
         AUTOMATO = createAnalisisAutomaton();
     }
     
     public enum TokenType {
-        ID, RESERVED, OPERATOR, ERROR;
+        ID, RESERVED, OPERATOR, ERROR, NUMBER;
 
         public static TokenType get(String typeName) {
             for (TokenType categoria : TokenType.values()) {
@@ -42,10 +43,14 @@ public class AnalisadorLexico {
     private TokenType checkTokenType(String token) {
         Matcher reservedMatcher = reservedpattern.matcher(token);
         Matcher operatorsMatcher = operatorsPattern.matcher(token);
+        Matcher numbersMatcher = numbersPattern.matcher(token);
+        
         if (reservedMatcher.find()) {
             return TokenType.RESERVED;
         } else if (operatorsMatcher.find()) {
             return TokenType.OPERATOR;
+        }else if (numbersMatcher.find()) {
+            return TokenType.NUMBER;
         }
         
         return TokenType.ID;
@@ -108,7 +113,6 @@ public class AnalisadorLexico {
             }
         };
         for (String palavra : conjuntoDePalavras) {
-            System.err.println(palavra.replace("\nif", ""));
             palavra = palavra.replace("\nif", "");
             tabelaDeTokens.get(doLexAnalisis(AUTOMATO.getInitialState(), palavra, palavra)).add(palavra);
         }
