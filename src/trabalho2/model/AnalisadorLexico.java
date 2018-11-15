@@ -141,7 +141,41 @@ public class AnalisadorLexico {
         /*
         (,) Q35-Q36
         */
-        
+        State plus = new State("Q37");
+        states.add(plus);
+        //final plus
+        finalState.add(plus);
+        /*
+        + Q37
+        */
+        State minus = new State("Q38");
+        states.add(minus);
+        //final minus
+        finalState.add(minus);
+        /*
+        - Q38
+        */
+        State mult = new State("Q39");
+        states.add(mult);
+        //final plus
+        finalState.add(mult);
+        /*
+        * Q39
+        */
+        State div = new State("Q40");
+        states.add(div);
+        //final plus
+        finalState.add(div);
+        /*
+        / Q40
+        */
+        State semicolon = new State("Q41");
+        states.add(semicolon);
+        //final plus
+        finalState.add(semicolon);
+        /*
+        ; Q41
+        */
         alphabet = genAlphabet();
         transitions= genTransitions(states);
         int a = 1;
@@ -199,6 +233,21 @@ public class AnalisadorLexico {
         //op-cl-parentheses
         alphabet.add('(');
         alphabet.add(')');
+        //
+        //plus
+        alphabet.add('+');
+        //
+        //minus
+        alphabet.add('-');
+        //
+        //mult
+        alphabet.add('*');
+        //
+        //div
+        alphabet.add('/');
+        //
+        //semicolon
+        alphabet.add(';');
         //
         return alphabet;
     }
@@ -331,6 +380,21 @@ public class AnalisadorLexico {
         //op-cl-parentheses
         transitions.addTransition(states.get(0), '(', states.get(34));
         transitions.addTransition(states.get(0), ')', states.get(35));
+        //
+        //plus
+        transitions.addTransition(states.get(0), '+', states.get(36));
+        //
+        //minus
+        transitions.addTransition(states.get(0), '-', states.get(37));
+        //
+        //mult
+        transitions.addTransition(states.get(0), '*', states.get(38));
+        //
+        //div
+        transitions.addTransition(states.get(0), '/', states.get(39));
+        //
+        //semicolon
+        transitions.addTransition(states.get(0), ';', states.get(40));
         //
         return transitions;
     }
