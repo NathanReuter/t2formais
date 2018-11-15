@@ -41,6 +41,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Programa Fonte"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem4ActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -162,7 +165,7 @@
           <Properties>
             <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="if a"/>
+            <Property name="text" type="java.lang.String" value="abada = a&#xa;if abada == a them b"/>
           </Properties>
         </Component>
       </SubComponents>

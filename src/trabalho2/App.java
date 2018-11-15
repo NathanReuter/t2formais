@@ -12,7 +12,7 @@ package trabalho2;
 
 import trabalho2.model.*;
 import trabalho2.view.View;
-public class App {
+public final class App {
 
     private View view;
     private AnalisadorLexico lex;
@@ -25,8 +25,12 @@ public class App {
         this.view = new View(this);
         lex = new AnalisadorLexico();
         parser = new AnalisadorSintatico(lex);
-        parser.parse(view.getSourceCode());
+        analiseSourceCode();
         
         this.view.show(true);
+    }
+    
+    public void analiseSourceCode() {
+        parser.parse(view.getSourceCode());
     }
 }

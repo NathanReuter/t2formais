@@ -52,7 +52,9 @@ public class AnalisadorLexico {
     }
     
     private Automaton createAnalisisAutomaton() {
-        ArrayList<State> states = new ArrayList<State>();
+//        PARA REGEX if|=|==|(a|b|c|d)+
+// https://cyberzhg.github.io/toolbox/min_dfa?regex=aWZ8PXw9PXwoYWJjZCkr
+        ArrayList<State> states = new ArrayList<>();
         ArrayList<Character> alphabet = new ArrayList<>();
         Transitions transitions = new Transitions();
         State initialState;
@@ -62,15 +64,35 @@ public class AnalisadorLexico {
         State A = new State("A");
         State B = new State("B");
         State C = new State("C");
+        State D = new State("D");
+        State E = new State("E");
         states.add(A);
         states.add(B);
         states.add(C);
+        alphabet.add('=');
+        alphabet.add('a');
+        alphabet.add('b');
+        alphabet.add('c');
+        alphabet.add('d');
         alphabet.add('i');
         alphabet.add('f');
         initialState = A;
+        finalState.add(B);
         finalState.add(C);
-        transitions.addTransition(A, 'i', B);
-        transitions.addTransition(B, 'f', C);
+        finalState.add(E);
+        transitions.addTransition(A, '=', B);
+        transitions.addTransition(A, 'a', C);
+        transitions.addTransition(A, 'b', C);
+        transitions.addTransition(A, 'c', C);
+        transitions.addTransition(A, 'd', C);
+        transitions.addTransition(A, 'i', D);
+        transitions.addTransition(B, '=', E);
+        transitions.addTransition(C, 'a', C);
+        transitions.addTransition(C, 'b', C);
+        transitions.addTransition(C, 'c', C);
+        transitions.addTransition(C, 'd', C);
+        transitions.addTransition(D, 'f', E);
+        
         return new 
         Automaton(states, alphabet, transitions, initialState, finalState, id);
     }
@@ -86,14 +108,15 @@ public class AnalisadorLexico {
             }
         };
         for (String palavra : conjuntoDePalavras) {
-            System.err.println(palavra);
+            System.err.println(palavra.replace("\nif", ""));
+            palavra = palavra.replace("\nif", "");
             tabelaDeTokens.get(doLexAnalisis(AUTOMATO.getInitialState(), palavra, palavra)).add(palavra);
         }
         System.out.println(tabelaDeTokens);
     }
     
     public TokenType doLexAnalisis (State actual, String word, String initialWord) {
-        if (AUTOMATO.getFinalStates().contains(actual)){
+        if (AUTOMATO.getFinalStates().contains(actual) && "".equals(word)){
             return checkTokenType(initialWord);
         }
         try {

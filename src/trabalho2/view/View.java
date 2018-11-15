@@ -63,7 +63,7 @@ public class View extends javax.swing.JFrame {
 
         sourceCodeArea.setColumns(20);
         sourceCodeArea.setRows(5);
-        sourceCodeArea.setText("if a");
+        sourceCodeArea.setText("abada = a\nif abada == a them b");
         jScrollPane2.setViewportView(sourceCodeArea);
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -100,6 +100,11 @@ public class View extends javax.swing.JFrame {
         jMenu2.setText("Analisar");
 
         jMenuItem4.setText("Programa Fonte");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem4);
 
         jMenuBar1.add(jMenu2);
@@ -161,6 +166,10 @@ public class View extends javax.swing.JFrame {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        app.analiseSourceCode();
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
