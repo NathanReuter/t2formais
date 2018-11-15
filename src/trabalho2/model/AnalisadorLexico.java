@@ -176,6 +176,17 @@ public class AnalisadorLexico {
         /*
         ; Q41
         */
+        State unitary = new State("Q42");
+        states.add(unitary);
+        State binary = new State("Q43");
+        states.add(binary);
+        //final unitary
+        finalState.add(unitary);
+        //final binary
+        finalState.add(binary);
+        /*
+        ops Q42-Q43
+        */
         alphabet = genAlphabet();
         transitions= genTransitions(states);
         int a = 1;
@@ -248,6 +259,12 @@ public class AnalisadorLexico {
         //
         //semicolon
         alphabet.add(';');
+        //
+        //ops
+        alphabet.add('=');
+        alphabet.add('!');
+        alphabet.add('>');
+        alphabet.add('<');
         //
         return alphabet;
     }
@@ -395,6 +412,14 @@ public class AnalisadorLexico {
         //
         //semicolon
         transitions.addTransition(states.get(0), ';', states.get(40));
+        //
+        //ops
+        transitions.addTransition(states.get(0), '!', states.get(41));
+        transitions.addTransition(states.get(0), '=', states.get(41));
+        transitions.addTransition(states.get(0), '<', states.get(41));
+        transitions.addTransition(states.get(0), '>', states.get(41));
+        
+        transitions.addTransition(states.get(41), '=', states.get(42));
         //
         return transitions;
     }
