@@ -11,21 +11,24 @@ import java.util.HashSet;
 import trabalho2.model.automato.Automaton;
 import trabalho2.model.automato.State;
 import trabalho2.model.automato.Transitions;
-    import java.util.regex.Matcher;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 /**
  *
  * @author nathan
  */
 public class AnalisadorLexico {
+
     private Automaton AUTOMATO;
     final Pattern reservedpattern = Pattern.compile("if|them|else|while|break|do|true|false|basic");
     final Pattern operatorsPattern = Pattern.compile("\\{|\\}|\\[|\\]|;|={1,2}|\\(|\\)|\\|{1,2}|&{2}|<|>|\\+|-|\\/|\\*");
     final Pattern numbersPattern = Pattern.compile("[0-9]+");
+
     public AnalisadorLexico() {
         AUTOMATO = createAnalisisAutomaton();
     }
-    
+
     public enum TokenType {
         ID, RESERVED, OPERATOR, ERROR, NUMBER;
 
@@ -39,23 +42,23 @@ public class AnalisadorLexico {
             return ERROR;
         }
     }
-    
+
     private TokenType checkTokenType(String token) {
         Matcher reservedMatcher = reservedpattern.matcher(token);
         Matcher operatorsMatcher = operatorsPattern.matcher(token);
         Matcher numbersMatcher = numbersPattern.matcher(token);
-        
+
         if (reservedMatcher.find()) {
             return TokenType.RESERVED;
         } else if (operatorsMatcher.find()) {
             return TokenType.OPERATOR;
-        }else if (numbersMatcher.find()) {
+        } else if (numbersMatcher.find()) {
             return TokenType.NUMBER;
         }
-        
+
         return TokenType.ID;
     }
-    
+
     private Automaton createAnalisisAutomaton() {
 //        PARA REGEX if|=|==|(a|b|c|d)+
 // https://cyberzhg.github.io/toolbox/min_dfa?regex=aWZ8PXw9PXwoYWJjZCkr
@@ -65,8 +68,23 @@ public class AnalisadorLexico {
         State initialState;
         ArrayList<State> finalState = new ArrayList<>();
         String id = "Automato";
-        
-        State A = new State("A");
+        State[] reservada_id = new State[23];
+        for (int i = 0; i < reservada_id.length; i++) {
+            reservada_id[i] = new State("Q" + (i + 1));
+            states.add(reservada_id[i]);
+        }
+        initialState = reservada_id[0];
+        //final reservada
+        finalState.add(reservada_id[7]);
+        //final id
+        finalState.add(reservada_id[8]);
+        /*
+        reservadas e id Q1-Q23
+        */
+        alphabet = genAlphabet();
+        transitions= genTransitions(states);
+        int a = 1;
+        /* State A = new State("A");
         State B = new State("B");
         State C = new State("C");
         State D = new State("D");
@@ -97,11 +115,98 @@ public class AnalisadorLexico {
         transitions.addTransition(C, 'c', C);
         transitions.addTransition(C, 'd', C);
         transitions.addTransition(D, 'f', E);
-        
-        return new 
-        Automaton(states, alphabet, transitions, initialState, finalState, id);
+         */
+        return new Automaton(states, alphabet, transitions, initialState, finalState, id);
     }
-    
+
+    public ArrayList<Character> genAlphabet() {
+        ArrayList<Character> alphabet = new ArrayList<>();
+        // reservados e id
+        alphabet.add('a');
+        alphabet.add('b');
+        alphabet.add('c');
+        alphabet.add('d');
+        alphabet.add('e');
+        alphabet.add('f');
+        alphabet.add('h');
+        alphabet.add('i');
+        alphabet.add('k');
+        alphabet.add('l');
+        alphabet.add('n');
+        alphabet.add('o');
+        alphabet.add('r');
+        alphabet.add('s');
+        alphabet.add('t');
+        alphabet.add('u');
+        alphabet.add('w');
+        //
+        return alphabet;
+    }
+
+    public Transitions genTransitions(ArrayList<State> states) {
+        Transitions transitions = new Transitions();
+        //id
+        transitions.addTransition(states.get(0), 'a', states.get(8));
+        transitions.addTransition(states.get(0), 'o', states.get(8));
+        transitions.addTransition(states.get(0), 'u', states.get(8));
+        //end id
+        //reservadas
+        transitions.addTransition(states.get(0), 'b', states.get(9));
+        transitions.addTransition(states.get(0), 'd', states.get(10));
+        transitions.addTransition(states.get(0), 'e', states.get(11));
+        transitions.addTransition(states.get(0), 'f', states.get(12));
+        transitions.addTransition(states.get(0), 'i', states.get(13));
+        transitions.addTransition(states.get(0), 't', states.get(14));
+        transitions.addTransition(states.get(0), 'w', states.get(15));
+        
+        transitions.addTransition(states.get(1), 's', states.get(3));
+        
+        transitions.addTransition(states.get(2), 'n', states.get(7));
+        
+        transitions.addTransition(states.get(3), 'e', states.get(7));
+        
+        transitions.addTransition(states.get(4), 'l', states.get(3));
+        
+        transitions.addTransition(states.get(5), 'c', states.get(7));
+        
+        transitions.addTransition(states.get(6), 'k', states.get(7));
+        
+        transitions.addTransition(states.get(8), 'a', states.get(8));
+        transitions.addTransition(states.get(8), 'o', states.get(8));
+        transitions.addTransition(states.get(8), 'u', states.get(8));
+        
+        transitions.addTransition(states.get(9), 'a', states.get(16));
+        transitions.addTransition(states.get(9), 'r', states.get(17));
+        
+        transitions.addTransition(states.get(10), 'o', states.get(7));
+        
+        transitions.addTransition(states.get(11), 'l', states.get(1));
+        
+        transitions.addTransition(states.get(12), 'a', states.get(11));
+        
+        transitions.addTransition(states.get(13), 'f', states.get(7));
+        
+        transitions.addTransition(states.get(14), 'h', states.get(18));
+        transitions.addTransition(states.get(14), 'r', states.get(19));
+        
+        transitions.addTransition(states.get(15), 'h', states.get(20));
+        
+        transitions.addTransition(states.get(16), 's', states.get(21));
+        
+        transitions.addTransition(states.get(17), 'e', states.get(22));
+        
+        transitions.addTransition(states.get(18), 'e', states.get(2));
+        
+        transitions.addTransition(states.get(19), 'u', states.get(3));
+        transitions.addTransition(states.get(20), 'i', states.get(4));
+        
+        transitions.addTransition(states.get(21), 'i', states.get(5));
+        
+        transitions.addTransition(states.get(22), 'a', states.get(6));
+        
+        //end reservados
+        return transitions;
+    }
 
     public void analise(String sourceCode) {
         String[] conjuntoDePalavras = sourceCode.trim().split(" ");
@@ -118,9 +223,9 @@ public class AnalisadorLexico {
         }
         System.out.println(tabelaDeTokens);
     }
-    
-    public TokenType doLexAnalisis (State actual, String word, String initialWord) {
-        if (AUTOMATO.getFinalStates().contains(actual) && "".equals(word)){
+
+    public TokenType doLexAnalisis(State actual, String word, String initialWord) {
+        if (AUTOMATO.getFinalStates().contains(actual) && "".equals(word)) {
             return checkTokenType(initialWord);
         }
         try {
@@ -128,8 +233,9 @@ public class AnalisadorLexico {
             System.out.println(estadoDestino);
             if (estadoDestino != null) {
                 return doLexAnalisis(estadoDestino, word.substring(1), initialWord);
-            } 
-        } catch(Exception e) {}
+            }
+        } catch (Exception e) {
+        }
         return TokenType.ERROR;
     }
 
