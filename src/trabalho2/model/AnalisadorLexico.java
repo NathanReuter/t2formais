@@ -20,12 +20,12 @@ import java.util.regex.Pattern;
  */
 public class AnalisadorLexico {
 
-    private Automaton AUTOMATO;
+    private final Automaton AUTOMATO;
     final Pattern reservedpattern = Pattern.compile("if|then|else|while|break|do|true|false|basic");
     final Pattern operatorsPattern = Pattern.compile("\\{|\\}|\\[|\\]|;|={1,2}|\\(|\\)|\\|{1,2}|&{2}|<|>|\\+|-|\\/|\\*");
     final Pattern numbersPattern = Pattern.compile("[0-9]+");
     private ArrayList<String> tokenList;
-    private TabelaDeSimbolos tabelaDeSimbolos;
+    private final TabelaDeSimbolos tabelaDeSimbolos;
     
     public AnalisadorLexico() {
         AUTOMATO = createAnalisisAutomaton();
@@ -433,6 +433,7 @@ public class AnalisadorLexico {
     }
 
     public void analise(String sourceCode) {
+        tabelaDeSimbolos.clean();
         String[] conjuntoDePalavras = cleanWord(sourceCode);
         tokenList = new ArrayList<>();
        
