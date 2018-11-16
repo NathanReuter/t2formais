@@ -11,9 +11,11 @@ package trabalho2.model;
  */
 public class AnalisadorSintatico {
     private AnalisadorLexico lex;
+    private TabelaDeSimbolos tabelaDeSimbolos;
     
     public AnalisadorSintatico(AnalisadorLexico lex) {
         this.lex = lex;
+        this.tabelaDeSimbolos = TabelaDeSimbolos.getInstance();
     }
     
     public void parse(String sourceCode) {

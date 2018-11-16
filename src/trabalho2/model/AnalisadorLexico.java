@@ -21,12 +21,15 @@ import java.util.regex.Pattern;
 public class AnalisadorLexico {
 
     private Automaton AUTOMATO;
-    final Pattern reservedpattern = Pattern.compile("if|them|else|while|break|do|true|false|basic");
+    final Pattern reservedpattern = Pattern.compile("if|then|else|while|break|do|true|false|basic");
     final Pattern operatorsPattern = Pattern.compile("\\{|\\}|\\[|\\]|;|={1,2}|\\(|\\)|\\|{1,2}|&{2}|<|>|\\+|-|\\/|\\*");
     final Pattern numbersPattern = Pattern.compile("[0-9]+");
-
+    private ArrayList<String> tokenList;
+    private TabelaDeSimbolos tabelaDeSimbolos;
+    
     public AnalisadorLexico() {
         AUTOMATO = createAnalisisAutomaton();
+        this.tabelaDeSimbolos = TabelaDeSimbolos.getInstance();
     }
 
     public enum TokenType {
@@ -189,7 +192,7 @@ public class AnalisadorLexico {
         */
         alphabet = genAlphabet();
         transitions= genTransitions(states);
-        int a = 1;
+
         return new Automaton(states, alphabet, transitions, initialState, finalState, id);
     }
 
@@ -423,30 +426,33 @@ public class AnalisadorLexico {
         //
         return transitions;
     }
+    
+    public String[] cleanWord (String word) {
+        word = word.replace("\n", " ");
+        return word.trim().split(" ");
+    }
 
     public void analise(String sourceCode) {
-        String[] conjuntoDePalavras = sourceCode.trim().split(" ");
-        HashMap<TokenType, HashSet<String>> tabelaDeTokens = new HashMap<TokenType, HashSet<String>>() {
-            {
-                for (TokenType categoria : TokenType.values()) {
-                    put(categoria, new HashSet<String>());
-                }
-            }
-        };
+        String[] conjuntoDePalavras = cleanWord(sourceCode);
+        tokenList = new ArrayList<>();
+       
         for (String palavra : conjuntoDePalavras) {
-            palavra = palavra.replace("\nif", "");
-            tabelaDeTokens.get(doLexAnalisis(AUTOMATO.getInitialState(), palavra, palavra)).add(palavra);
+            tabelaDeSimbolos.addToken(doLexAnalisis(AUTOMATO.getInitialState(), palavra, palavra), palavra);
         }
-        System.out.println(tabelaDeTokens);
+        
+        System.out.println(tokenList.toString());
+        System.out.println(tabelaDeSimbolos.getTable());
     }
 
     public TokenType doLexAnalisis(State actual, String word, String initialWord) {
         if (AUTOMATO.getFinalStates().contains(actual) && "".equals(word)) {
+            tokenList.add(initialWord);
+            
             return checkTokenType(initialWord);
         }
         try {
             State estadoDestino = AUTOMATO.getNextStates(actual, word.charAt(0)).get(0);
-            System.out.println(estadoDestino);
+
             if (estadoDestino != null) {
                 return doLexAnalisis(estadoDestino, word.substring(1), initialWord);
             }
@@ -456,6 +462,6 @@ public class AnalisadorLexico {
     }
 
     public String getNextToken() {
-        return "";
+        return tokenList.remove(0);
     }
 }
