@@ -12,6 +12,7 @@ package trabalho2;
 
 import trabalho2.model.*;
 import trabalho2.view.View;
+
 public final class App {
 
     private View view;

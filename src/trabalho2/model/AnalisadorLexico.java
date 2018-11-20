@@ -45,6 +45,10 @@ public class AnalisadorLexico {
             return ERROR;
         }
     }
+    
+    public ArrayList<Character> getAlfabet() {
+        return AUTOMATO.getAlphabet();
+    }
 
     private TokenType checkTokenType(String token) {
         Matcher reservedMatcher = reservedpattern.matcher(token);
@@ -196,7 +200,7 @@ public class AnalisadorLexico {
         return new Automaton(states, alphabet, transitions, initialState, finalState, id);
     }
 
-    public ArrayList<Character> genAlphabet() {
+    private ArrayList<Character> genAlphabet() {
         ArrayList<Character> alphabet = new ArrayList<>();
         // reservados e id
         alphabet.add('a');
@@ -464,5 +468,9 @@ public class AnalisadorLexico {
 
     public String getNextToken() {
         return tokenList.remove(0);
+    }
+    
+    public boolean hasTokens() {
+        return !tokenList.isEmpty();
     }
 }
