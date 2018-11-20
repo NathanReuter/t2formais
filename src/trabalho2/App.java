@@ -31,6 +31,6 @@ public final class App {
     }
     
     public void analiseSourceCode() {
-        parser.parse(view.getSourceCode());
+        view.updateStatus(parser.parse(view.getSourceCode()));
     }
 }

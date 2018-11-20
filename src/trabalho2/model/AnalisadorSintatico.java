@@ -18,7 +18,13 @@ public class AnalisadorSintatico {
         this.tabelaDeSimbolos = TabelaDeSimbolos.getInstance();
     }
     
-    public void parse(String sourceCode) {
+    public String parse(String sourceCode) {
+        String status = "# Compiling \n\n";
         lex.analise(sourceCode);
+        status += "Lexical Errors: " + tabelaDeSimbolos
+                .tabela.get(AnalisadorLexico.TokenType.ERROR);
+        
+        
+        return status;
     }
 }

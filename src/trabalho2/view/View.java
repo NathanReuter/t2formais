@@ -28,6 +28,9 @@ public class View extends javax.swing.JFrame {
         return sourceCodeArea.getText();
     }
 
+    public void updateStatus(String status) {
+        statusTextArea.setText(status);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -38,7 +41,7 @@ public class View extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        statusTextArea = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         sourceCodeArea = new javax.swing.JTextArea();
         jSeparator1 = new javax.swing.JSeparator();
@@ -54,12 +57,14 @@ public class View extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextArea1.setBackground(new java.awt.Color(81, 81, 81));
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Nimbus Mono L", 0, 15)); // NOI18N
-        jTextArea1.setForeground(new java.awt.Color(232, 232, 232));
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        statusTextArea.setBackground(new java.awt.Color(81, 81, 81));
+        statusTextArea.setColumns(20);
+        statusTextArea.setFont(new java.awt.Font("Nimbus Mono L", 0, 15)); // NOI18N
+        statusTextArea.setForeground(new java.awt.Color(181, 209, 1));
+        statusTextArea.setRows(5);
+        statusTextArea.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        statusTextArea.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        jScrollPane1.setViewportView(statusTextArea);
 
         sourceCodeArea.setColumns(20);
         sourceCodeArea.setRows(5);
@@ -184,7 +189,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea sourceCodeArea;
+    private javax.swing.JTextArea statusTextArea;
     // End of variables declaration//GEN-END:variables
 }
