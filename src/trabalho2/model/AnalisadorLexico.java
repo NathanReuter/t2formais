@@ -54,15 +54,23 @@ public class AnalisadorLexico {
         Matcher reservedMatcher = reservedpattern.matcher(token);
         Matcher operatorsMatcher = operatorsPattern.matcher(token);
         Matcher numbersMatcher = numbersPattern.matcher(token);
-
-        if (reservedMatcher.find()) {
+        
+        if (reservedMatcher.find()) { 
+            tokenList.add(token);
+            
             return TokenType.RESERVED;
         } else if (operatorsMatcher.find()) {
+            tokenList.add(token);
+            
             return TokenType.OPERATOR;
         } else if (numbersMatcher.find()) {
+            tokenList.add("num");
+            
             return TokenType.NUMBER;
         }
-
+        
+        tokenList.add("id");
+        
         return TokenType.ID;
     }
 
@@ -450,9 +458,7 @@ public class AnalisadorLexico {
     }
 
     public TokenType doLexAnalisis(State actual, String word, String initialWord) {
-        if (AUTOMATO.getFinalStates().contains(actual) && "".equals(word)) {
-            tokenList.add(initialWord);
-            
+        if (AUTOMATO.getFinalStates().contains(actual) && "".equals(word)) {            
             return checkTokenType(initialWord);
         }
         try {

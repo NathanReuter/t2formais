@@ -53,10 +53,50 @@ public class AnalisadorSintatico {
         return Vn;
     }
     
+    public ArrayList<String> genGrammarVts() {
+        ArrayList<String> Vt = new ArrayList<>();
+//final Pattern reservedpattern = Pattern.compile("if|then|else|while|break|do|true|false|basic");
+//    final Pattern operatorsPattern = Pattern.compile("\\{|\\}|\\[|\\]|;|={1,2}|\\(|\\)|\\|{1,2}|&{2}|<|>|\\+|-|\\/|\\*");
+        Vt.add("id");
+        Vt.add("basic");
+        Vt.add("if");
+        Vt.add("then");
+        Vt.add("else");
+        Vt.add("while");
+        Vt.add("break");
+        Vt.add("true");
+        Vt.add("false");
+        Vt.add("num");
+        Vt.add("real");
+        Vt.add(";");
+        Vt.add("[");
+        Vt.add("]");
+        Vt.add("{");
+        Vt.add("}");
+        Vt.add("(");
+        Vt.add(")");
+        Vt.add("[");
+        Vt.add("]");     
+        Vt.add("=");
+        Vt.add("==");
+        Vt.add("<");
+        Vt.add(">");
+        Vt.add("<=");
+        Vt.add(">=");
+        Vt.add("&&");
+        Vt.add("-");
+        Vt.add("+");
+        Vt.add("*");
+        Vt.add("/");
+        Vt.add("!");
+        
+        
+        return Vt;
+    }
+    
     private Grammar createGrammar() {
         ArrayList<String> Vn = genGrammarVns(); 
-//        Errado ... Vt = lex.getAlfabet();
-        ArrayList<Character> Vt = lex.getAlfabet();
+        ArrayList<String> Vt = genGrammarVts();
         ArrayList<Production> productions = new ArrayList<Production>(); 
         String initialSimbol = Vn.get(0);
        
