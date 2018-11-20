@@ -24,6 +24,7 @@ public class AnalisadorLexico {
     final Pattern reservedpattern = Pattern.compile("if|then|else|while|break|do|true|false|basic");
     final Pattern operatorsPattern = Pattern.compile("\\{|\\}|\\[|\\]|;|={1,2}|\\(|\\)|\\|{1,2}|&{2}|<|>|\\+|-|\\/|\\*");
     final Pattern numbersPattern = Pattern.compile("[0-9]+");
+    final Pattern realPattern = Pattern.compile("-?[0-9]+.[0-9]+");
     private ArrayList<String> tokenList;
     private final TabelaDeSimbolos tabelaDeSimbolos;
     
@@ -33,7 +34,7 @@ public class AnalisadorLexico {
     }
 
     public enum TokenType {
-        ID, RESERVED, OPERATOR, ERROR, NUMBER;
+        ID, RESERVED, OPERATOR, ERROR, NUMBER, REAL;
 
         public static TokenType get(String typeName) {
             for (TokenType categoria : TokenType.values()) {
@@ -46,14 +47,11 @@ public class AnalisadorLexico {
         }
     }
     
-    public ArrayList<Character> getAlfabet() {
-        return AUTOMATO.getAlphabet();
-    }
-
     private TokenType checkTokenType(String token) {
         Matcher reservedMatcher = reservedpattern.matcher(token);
         Matcher operatorsMatcher = operatorsPattern.matcher(token);
         Matcher numbersMatcher = numbersPattern.matcher(token);
+        Matcher realMatcher = realPattern.matcher(token);
         
         if (reservedMatcher.find()) { 
             tokenList.add(token);
@@ -63,11 +61,15 @@ public class AnalisadorLexico {
             tokenList.add(token);
             
             return TokenType.OPERATOR;
+        } else if (realMatcher.find()){
+            tokenList.add("real");
+            
+            return TokenType.REAL; 
         } else if (numbersMatcher.find()) {
             tokenList.add("num");
             
             return TokenType.NUMBER;
-        }
+        } 
         
         tokenList.add("id");
         

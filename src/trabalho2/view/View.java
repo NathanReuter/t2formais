@@ -68,7 +68,7 @@ public class View extends javax.swing.JFrame {
 
         sourceCodeArea.setColumns(20);
         sourceCodeArea.setRows(5);
-        sourceCodeArea.setText("aaa = 1\nooo = 2\n\nif aaa == ooo then \n u = 1\nelse\n u = 2");
+        sourceCodeArea.setText("{\n   aaa = 1\n   ooo = 2\n\n   if aaa == ooo then \n     u = 1\n   else\n     u = 2\n}");
         jScrollPane2.setViewportView(sourceCodeArea);
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);

@@ -721,65 +721,20 @@ public class Automaton extends Regular {
 
     
     public static Automaton complement(Automaton af){
-		/*if(af.getExtras().contains("AFD_Comp"))
-			return af;*/
-		
-		Automaton comp;
-		
-		if(!af.isAFD())
-			comp = determinize(af);
-		else
-			comp = af;
-		
-		comp = complete(comp);
-		comp.setFinalStates(comp.getNotFinalStates());
-		
-		return comp;
-	}
+        /*if(af.getExtras().contains("AFD_Comp"))
+                return af;*/
 
-    public static Grammar convertToGrammar(Automaton afd) {
-        String grammar = "";
-        HashMap<String, String> rename = new HashMap<String, String>();
-        for (State s : afd.getStates()) {
-            String temp = "";
-            String sName = s.getName().toUpperCase();
-            if (!rename.containsKey(sName)) {
-                rename.put(sName, clearName(sName, rename));
-            }
-            temp += rename.get(sName) + "->";
+        Automaton comp;
 
-            HashMap<Character, ArrayList<State>> transition = afd.getTransitions().getTransition(s);
-            for (Entry<Character, ArrayList<State>> entry : transition.entrySet()) {
-                Character alpha = entry.getKey();
-                ArrayList<State> states = entry.getValue();
-                if (states.isEmpty()) {
-                    continue;
-                }
-                State state = states.get(0);
-                String stName = state.getName().toUpperCase();
-                if (!rename.containsKey(stName)) {
-                    rename.put(stName, clearName(stName, rename));
-                }
-                temp += alpha + rename.get(stName) + "|";
+        if(!af.isAFD())
+                comp = determinize(af);
+        else
+                comp = af;
 
-                for (State sta : afd.getFinalStates()) {
-                    if (sta.getName().toUpperCase().equals(state.getName().toUpperCase())) {
-                        temp += alpha + "|";
-                    }
-                }
+        comp = complete(comp);
+        comp.setFinalStates(comp.getNotFinalStates());
 
-            }
-            temp = temp.substring(0, temp.length() - 1) + " ";
-            int a = 1;
-
-            if (!s.equals(afd.getInitialState())) {
-                grammar += temp;
-            } else {
-                grammar = temp + grammar;
-            }
-        }
-        Grammar newgrammar = Grammar.parseGrammarInput(afd.getId()+"#GR", grammar);
-        return newgrammar;
+        return comp;
     }
 
     private static String clearName(String sName, HashMap<String, String> rename) {

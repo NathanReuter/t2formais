@@ -173,7 +173,7 @@
           <Properties>
             <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="aaa = 1&#xa;ooo = 2&#xa;&#xa;if aaa == ooo then &#xa; u = 1&#xa;else&#xa; u = 2"/>
+            <Property name="text" type="java.lang.String" value="{&#xa;   aaa = 1&#xa;   ooo = 2&#xa;&#xa;   if aaa == ooo then &#xa;     u = 1&#xa;   else&#xa;     u = 2&#xa;}"/>
           </Properties>
         </Component>
       </SubComponents>

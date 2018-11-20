@@ -6,6 +6,7 @@
 package trabalho2.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import trabalho2.model.glc.*;
 
 /**
@@ -55,8 +56,6 @@ public class AnalisadorSintatico {
     
     public ArrayList<String> genGrammarVts() {
         ArrayList<String> Vt = new ArrayList<>();
-//final Pattern reservedpattern = Pattern.compile("if|then|else|while|break|do|true|false|basic");
-//    final Pattern operatorsPattern = Pattern.compile("\\{|\\}|\\[|\\]|;|={1,2}|\\(|\\)|\\|{1,2}|&{2}|<|>|\\+|-|\\/|\\*");
         Vt.add("id");
         Vt.add("basic");
         Vt.add("if");
@@ -94,22 +93,94 @@ public class AnalisadorSintatico {
         return Vt;
     }
     
+    public ArrayList<Production> genGrammarProductions() {
+        ArrayList<Production> prods = new ArrayList<>();
+        prods.add(new Production("PROGRAM", new ArrayList<>(Arrays.asList("BLOCK"))));
+        
+        prods.add(new Production("BLOCK", new ArrayList<>(Arrays.asList("{","DECL","STMTS", "}"))));
+        
+        prods.add(new Production("DECLS", new ArrayList<>(Arrays.asList("DECL", "DECLS"))));
+        prods.add(new Production("DECLS", new ArrayList<>(Arrays.asList("&"))));
+        
+        prods.add(new Production("DECL", new ArrayList<>(Arrays.asList("TYPE", "id"))));
+        
+        prods.add(new Production("TYPE", new ArrayList<>(Arrays.asList("BASIC", "TYPES"))));
+        
+        prods.add(new Production("TYPES", new ArrayList<>(Arrays.asList("[", "num", "]", "TYPES"))));
+        prods.add(new Production("TYPES", new ArrayList<>(Arrays.asList("&"))));
+        
+        prods.add(new Production("STMS", new ArrayList<>(Arrays.asList("STMT", "STMS"))));
+        prods.add(new Production("STMS", new ArrayList<>(Arrays.asList("&"))));
+        
+        prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("LOC", "=", "BOOL", ";"))));
+        prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("MATCHED_IF"))));
+        prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("OPEN_IF"))));
+        prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("while", "(", "BOOL", ")","STMT"))));
+        prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("do", "STMT", "while", "(", "BOOL", ")", ";"))));
+        prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("break", ";"))));
+        prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("BLOCK"))));
+        
+        prods.add(new Production("MATCHED_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL", "then", "MATCHED_IF", "else", "MATCHED_IF"))));
+        
+        prods.add(new Production("OPEN_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL", "then", "STMT"))));
+        prods.add(new Production("OPEN_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL", "then", "MATCHED_IF", "else", "OPEN_IF"))));
+        
+        prods.add(new Production("LOC", new ArrayList<>(Arrays.asList("id", "LOCS"))));
+        
+        prods.add(new Production("LOCS", new ArrayList<>(Arrays.asList("[", "BOOL", "]", "LOCS"))));
+        prods.add(new Production("LOCS", new ArrayList<>(Arrays.asList("&"))));
+        
+        prods.add(new Production("BOOL", new ArrayList<>(Arrays.asList("JOIN"))));
+        prods.add(new Production("BOOL", new ArrayList<>(Arrays.asList("JOIN", "||", "BOOL"))));
+        
+        prods.add(new Production("JOIN", new ArrayList<>(Arrays.asList("EQUALITY"))));
+        prods.add(new Production("JOIN", new ArrayList<>(Arrays.asList("EQUALITY", "&&", "JOIN"))));
+
+        prods.add(new Production("EQUALITY", new ArrayList<>(Arrays.asList("REL"))));
+        prods.add(new Production("EQUALITY", new ArrayList<>(Arrays.asList("REL", "==", "EQUALITY"))));
+        prods.add(new Production("EQUALITY", new ArrayList<>(Arrays.asList("REL","!=", "EQUALITY"))));
+        
+        prods.add(new Production("REL", new ArrayList<>(Arrays.asList("EXPR", "<", "EXPR"))));
+        prods.add(new Production("REL", new ArrayList<>(Arrays.asList("EXPR", "<=", "EXPR"))));
+        prods.add(new Production("REL", new ArrayList<>(Arrays.asList("EXPR", ">=", "EXPR"))));
+        prods.add(new Production("REL", new ArrayList<>(Arrays.asList("EXPR", ">", "EXPR"))));
+        prods.add(new Production("REL", new ArrayList<>(Arrays.asList("EXPR"))));
+        
+        prods.add(new Production("EXPR", new ArrayList<>(Arrays.asList("TERM" ,"EXPRS"))));
+        
+        prods.add(new Production("EXPRS", new ArrayList<>(Arrays.asList("+", "TERM" ,"EXPRS"))));
+        prods.add(new Production("EXPRS", new ArrayList<>(Arrays.asList("-"))));
+        prods.add(new Production("EXPRS", new ArrayList<>(Arrays.asList("&"))));
+        
+        prods.add(new Production("UNARY", new ArrayList<>(Arrays.asList("!", "UNARY"))));
+        prods.add(new Production("UNARY", new ArrayList<>(Arrays.asList("-", "UNARY"))));
+        prods.add(new Production("UNARY", new ArrayList<>(Arrays.asList("FACTOR"))));
+        
+        prods.add(new Production("FACTOR", new ArrayList<>(Arrays.asList("(", "BOOL", ")"))));
+        prods.add(new Production("FACTOR", new ArrayList<>(Arrays.asList("LOC"))));
+        prods.add(new Production("FACTOR", new ArrayList<>(Arrays.asList("num"))));
+        prods.add(new Production("FACTOR", new ArrayList<>(Arrays.asList("real"))));
+        prods.add(new Production("FACTOR", new ArrayList<>(Arrays.asList("true"))));
+        prods.add(new Production("FACTOR", new ArrayList<>(Arrays.asList("false"))));
+        
+        return prods;
+    }
     private Grammar createGrammar() {
         ArrayList<String> Vn = genGrammarVns(); 
         ArrayList<String> Vt = genGrammarVts();
-        ArrayList<Production> productions = new ArrayList<Production>(); 
+        ArrayList<Production> productions = genGrammarProductions(); 
         String initialSimbol = Vn.get(0);
        
         
-        return Grammar.parseGrammarInput("parserGrammar", "");
+        return new Grammar(Vn, Vt, productions, initialSimbol);
     }
     
     public String parse(String sourceCode) {
         String status = "# Compiling \n\n";
         lex.analise(sourceCode);
         status += "Lexical Errors: " + tabelaDeSimbolos
-                .tabela.get(AnalisadorLexico.TokenType.ERROR);
-        
+                .tabela.get(AnalisadorLexico.TokenType.ERROR) + "\n";
+      
         while (lex.hasTokens()) {
             doSintaticalAnalisis(lex.getNextToken());
         }
@@ -119,6 +190,6 @@ public class AnalisadorSintatico {
     
     
     public void doSintaticalAnalisis(String token) {
-        System.out.println(token);
+//        System.out.println(token);
     }
 }
