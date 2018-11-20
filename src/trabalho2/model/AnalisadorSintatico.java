@@ -22,7 +22,7 @@ public class AnalisadorSintatico {
         this.lex = lex;
         this.tabelaDeSimbolos = TabelaDeSimbolos.getInstance();
         GRAMMAR = createGrammar();
-       
+        System.out.println(GRAMMAR.toString());
     }
     
     private ArrayList<String> genGrammarVns() {
