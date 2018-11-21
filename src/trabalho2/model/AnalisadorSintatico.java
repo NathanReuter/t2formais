@@ -7,6 +7,9 @@ package trabalho2.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Set;
+
 import trabalho2.model.glc.*;
 
 /**
@@ -17,6 +20,7 @@ public class AnalisadorSintatico {
     private AnalisadorLexico lex;
     private TabelaDeSimbolos tabelaDeSimbolos;
     private Grammar GRAMMAR;
+    private TabelaDeAnalise tabelaDeAnalise;
     
     public AnalisadorSintatico(AnalisadorLexico lex) {
         this.lex = lex;
@@ -191,5 +195,32 @@ public class AnalisadorSintatico {
     
     public void doSintaticalAnalisis(String token) {
 //        System.out.println(token);
+    }
+    
+    public void genTabelaDeAnalise() {
+    	GRAMMAR.getFirst();
+    	GRAMMAR.getFollow();
+
+    	tabelaDeAnalise = new TabelaDeAnalise(GRAMMAR);
+    	String [] aux;
+    	String [] aux2;
+    	
+    	for (Production p : GRAMMAR.getProductions()) {
+    		
+    		aux = (String[]) GRAMMAR.getSentenceFirst(p.getSentence()).toArray();
+    		aux2 = (String[]) GRAMMAR.getFollow(p.getNT()).toArray();
+    		
+    		for(String s : aux) {
+    			if(s != "&" ) {
+    				tabelaDeAnalise.addM(p.getNT(), s, p);
+    			}
+    			else {
+    				for(String s1 : aux2) {
+    					tabelaDeAnalise.addM(p.getNT(), s1, p);
+    				}
+    			}
+    		}
+    		
+        }
     }
 }
