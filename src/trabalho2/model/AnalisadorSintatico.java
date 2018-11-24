@@ -7,6 +7,8 @@ package trabalho2.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Set;
 import trabalho2.model.glc.*;
 
 /**
@@ -22,6 +24,8 @@ public class AnalisadorSintatico {
         this.lex = lex;
         this.tabelaDeSimbolos = TabelaDeSimbolos.getInstance();
         GRAMMAR = createGrammar();
+        HashMap<String, Set<String>> first = GRAMMAR.getFirst();
+        HashMap<String, Set<String>> follow = GRAMMAR.getFollow();
         System.out.println(GRAMMAR.toString());
     }
     
@@ -41,9 +45,14 @@ public class AnalisadorSintatico {
         Vn.add("loc".toUpperCase());
         Vn.add("locs".toUpperCase());
         Vn.add("bool".toUpperCase());
+        Vn.add("bool1".toUpperCase());
         Vn.add("join".toUpperCase());
+        Vn.add("join1".toUpperCase());
         Vn.add("equality".toUpperCase());
+        Vn.add("equality1".toUpperCase());
         Vn.add("rel".toUpperCase());
+        Vn.add("rel1".toUpperCase());
+        Vn.add("rel2".toUpperCase());
         Vn.add("expr".toUpperCase());
         Vn.add("exprs".toUpperCase());
         Vn.add("term".toUpperCase());
@@ -61,6 +70,7 @@ public class AnalisadorSintatico {
         Vt.add("if");
         Vt.add("then");
         Vt.add("else");
+        Vt.add("do");
         Vt.add("while");
         Vt.add("break");
         Vt.add("true");
@@ -78,6 +88,7 @@ public class AnalisadorSintatico {
         Vt.add("]");     
         Vt.add("=");
         Vt.add("==");
+        Vt.add("!=");
         Vt.add("<");
         Vt.add(">");
         Vt.add("<=");
@@ -88,6 +99,8 @@ public class AnalisadorSintatico {
         Vt.add("*");
         Vt.add("/");
         Vt.add("!");
+        Vt.add("&");
+        Vt.add("||");
         
         
         return Vt;
@@ -104,53 +117,68 @@ public class AnalisadorSintatico {
         
         prods.add(new Production("DECL", new ArrayList<>(Arrays.asList("TYPE", "id"))));
         
-        prods.add(new Production("TYPE", new ArrayList<>(Arrays.asList("BASIC", "TYPES"))));
+        prods.add(new Production("TYPE", new ArrayList<>(Arrays.asList("basic", "TYPES"))));
         
         prods.add(new Production("TYPES", new ArrayList<>(Arrays.asList("[", "num", "]", "TYPES"))));
         prods.add(new Production("TYPES", new ArrayList<>(Arrays.asList("&"))));
         
-        prods.add(new Production("STMS", new ArrayList<>(Arrays.asList("STMT", "STMS"))));
-        prods.add(new Production("STMS", new ArrayList<>(Arrays.asList("&"))));
+        prods.add(new Production("STMTS", new ArrayList<>(Arrays.asList("STMT", "STMTS"))));
+        prods.add(new Production("STMTS", new ArrayList<>(Arrays.asList("&"))));
         
         prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("LOC", "=", "BOOL", ";"))));
-        prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("MATCHED_IF"))));
-        prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("OPEN_IF"))));
+        //prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("MATCHED_IF"))));
+        //prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("OPEN_IF"))));
         prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("while", "(", "BOOL", ")","STMT"))));
         prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("do", "STMT", "while", "(", "BOOL", ")", ";"))));
         prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("break", ";"))));
         prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("BLOCK"))));
         
-        prods.add(new Production("MATCHED_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL", "then", "MATCHED_IF", "else", "MATCHED_IF"))));
+        prods.add(new Production("MATCHED_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL",")", "then", "MATCHED_IF", "else", "MATCHED_IF"))));
         
-        prods.add(new Production("OPEN_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL", "then", "STMT"))));
-        prods.add(new Production("OPEN_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL", "then", "MATCHED_IF", "else", "OPEN_IF"))));
+        prods.add(new Production("OPEN_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL",")", "then", "STMT"))));
+        prods.add(new Production("OPEN_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL",")", "then", "MATCHED_IF", "else", "OPEN_IF"))));
         
         prods.add(new Production("LOC", new ArrayList<>(Arrays.asList("id", "LOCS"))));
         
         prods.add(new Production("LOCS", new ArrayList<>(Arrays.asList("[", "BOOL", "]", "LOCS"))));
         prods.add(new Production("LOCS", new ArrayList<>(Arrays.asList("&"))));
         
-        prods.add(new Production("BOOL", new ArrayList<>(Arrays.asList("JOIN"))));
-        prods.add(new Production("BOOL", new ArrayList<>(Arrays.asList("JOIN", "||", "BOOL"))));
+        prods.add(new Production("BOOL", new ArrayList<>(Arrays.asList("JOIN","BOOL1"))));
         
-        prods.add(new Production("JOIN", new ArrayList<>(Arrays.asList("EQUALITY"))));
-        prods.add(new Production("JOIN", new ArrayList<>(Arrays.asList("EQUALITY", "&&", "JOIN"))));
-
-        prods.add(new Production("EQUALITY", new ArrayList<>(Arrays.asList("REL"))));
-        prods.add(new Production("EQUALITY", new ArrayList<>(Arrays.asList("REL", "==", "EQUALITY"))));
-        prods.add(new Production("EQUALITY", new ArrayList<>(Arrays.asList("REL","!=", "EQUALITY"))));
+        prods.add(new Production("BOOL1", new ArrayList<>(Arrays.asList("&"))));
+        prods.add(new Production("BOOL1", new ArrayList<>(Arrays.asList( "||", "BOOL"))));
         
-        prods.add(new Production("REL", new ArrayList<>(Arrays.asList("EXPR", "<", "EXPR"))));
-        prods.add(new Production("REL", new ArrayList<>(Arrays.asList("EXPR", "<=", "EXPR"))));
-        prods.add(new Production("REL", new ArrayList<>(Arrays.asList("EXPR", ">=", "EXPR"))));
-        prods.add(new Production("REL", new ArrayList<>(Arrays.asList("EXPR", ">", "EXPR"))));
-        prods.add(new Production("REL", new ArrayList<>(Arrays.asList("EXPR"))));
+        prods.add(new Production("JOIN", new ArrayList<>(Arrays.asList("EQUALITY","JOIN1"))));
+        
+        prods.add(new Production("JOIN1", new ArrayList<>(Arrays.asList("&"))));
+        prods.add(new Production("JOIN1", new ArrayList<>(Arrays.asList( "&&", "JOIN"))));
+        
+        prods.add(new Production("EQUALITY", new ArrayList<>(Arrays.asList("REL","EQUALITY1"))));
+        
+        prods.add(new Production("EQUALITY1", new ArrayList<>(Arrays.asList("&"))));
+        prods.add(new Production("EQUALITY1", new ArrayList<>(Arrays.asList( "==", "EQUALITY"))));
+        prods.add(new Production("EQUALITY1", new ArrayList<>(Arrays.asList( "!=", "EQUALITY"))));
+        
+        prods.add(new Production("REL", new ArrayList<>(Arrays.asList("EXPR", "REL1"))));
+        
+        prods.add(new Production("REL1", new ArrayList<>(Arrays.asList( "<", "REL2"))));
+        prods.add(new Production("REL1", new ArrayList<>(Arrays.asList(">", "REL2"))));
+        prods.add(new Production("REL1", new ArrayList<>(Arrays.asList("&"))));
+        
+        prods.add(new Production("REL2", new ArrayList<>(Arrays.asList("EXPR"))));
+        prods.add(new Production("REL2", new ArrayList<>(Arrays.asList("=","EXPR"))));
         
         prods.add(new Production("EXPR", new ArrayList<>(Arrays.asList("TERM" ,"EXPRS"))));
         
         prods.add(new Production("EXPRS", new ArrayList<>(Arrays.asList("+", "TERM" ,"EXPRS"))));
-        prods.add(new Production("EXPRS", new ArrayList<>(Arrays.asList("-"))));
+        prods.add(new Production("EXPRS", new ArrayList<>(Arrays.asList("-", "TERM" ,"EXPRS"))));
         prods.add(new Production("EXPRS", new ArrayList<>(Arrays.asList("&"))));
+        
+        prods.add(new Production("TERM", new ArrayList<>(Arrays.asList("UNARY","EXPRS"))));
+        
+        prods.add(new Production("TERMS", new ArrayList<>(Arrays.asList("*","UNARY","TERMS"))));
+        prods.add(new Production("TERMS", new ArrayList<>(Arrays.asList("/","UNARY","TERMS"))));
+        prods.add(new Production("TERMS", new ArrayList<>(Arrays.asList("&"))));
         
         prods.add(new Production("UNARY", new ArrayList<>(Arrays.asList("!", "UNARY"))));
         prods.add(new Production("UNARY", new ArrayList<>(Arrays.asList("-", "UNARY"))));
