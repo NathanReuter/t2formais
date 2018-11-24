@@ -24,5 +24,5 @@ public class TabelaDeAnalise {
     public void addM(String nt, String t, Production p) {
         tabela.get(nt).put(t, p);
     }
-  
+    
 }

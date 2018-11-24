@@ -20,10 +20,12 @@ public class AnalisadorSintatico {
     private TabelaDeSimbolos tabelaDeSimbolos;
     private Grammar GRAMMAR;
     private TabelaDeAnalise tabelaDeAnalise;
+    private ArrayList<String> pilha;
     
     public AnalisadorSintatico(AnalisadorLexico lex) {
         this.lex = lex;
         this.tabelaDeSimbolos = TabelaDeSimbolos.getInstance();
+        pilha = new ArrayList<>();
         GRAMMAR = createGrammar();
         HashMap<String, Set<String>> first = GRAMMAR.getFirst();
         HashMap<String, Set<String>> follow = GRAMMAR.getFollow();
@@ -209,20 +211,32 @@ public class AnalisadorSintatico {
         lex.analise(sourceCode);
         status += "Lexical Errors: " + tabelaDeSimbolos
                 .tabela.get(AnalisadorLexico.TokenType.ERROR) + "\n";
-      
-        while (lex.hasTokens()) {
-            doSintaticalAnalisis(lex.getNextToken());
+        genTabelaDeAnalise();
+        pilha.add(GRAMMAR.getInitialSymbol());
+        
+        while (!pilha.isEmpty()) {
+            doSintaticalAnalisis(lex.getNextToken(), pilha.get(0));
         }
         
         return status;
     }
     
     
-    public void doSintaticalAnalisis(String token) {
-//        System.out.println(token);
+    public void doSintaticalAnalisis(String token, String simboloDePilha) {       
+        if (simboloDePilha.equals(token)) {
+            pilha.remove(0);
+        } else if (GRAMMAR.getVt().contains(simboloDePilha)) {
+            // erro lexico
+        } 
+//       else if (M[X, a] is an error entry) {
+//         // Erro lexico
+//      } else if (M[X,a] = X -+ Y1Y2 Yk) {
+//         Anda com a Transição 
+//         Coloca as produções na pilha
+//       }
     }
     
-    public void genTabelaDeAnalise() {
+    private void genTabelaDeAnalise() {
     	GRAMMAR.getFirst();
     	GRAMMAR.getFollow();
 
