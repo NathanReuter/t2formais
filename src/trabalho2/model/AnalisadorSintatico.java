@@ -43,8 +43,8 @@ public class AnalisadorSintatico {
         Vn.add("types".toUpperCase());
         Vn.add("stmts".toUpperCase());
         Vn.add("stmt".toUpperCase());
-        Vn.add("matched_if".toUpperCase());
-        Vn.add("open_if".toUpperCase());
+        //Vn.add("matched_if".toUpperCase());
+        //Vn.add("open_if".toUpperCase());
         Vn.add("loc".toUpperCase());
         Vn.add("locs".toUpperCase());
         Vn.add("bool".toUpperCase());
@@ -113,7 +113,7 @@ public class AnalisadorSintatico {
         ArrayList<Production> prods = new ArrayList<>();
         prods.add(new Production("PROGRAM", new ArrayList<>(Arrays.asList("BLOCK"))));
         
-        prods.add(new Production("BLOCK", new ArrayList<>(Arrays.asList("{","DECL","STMTS", "}"))));
+        prods.add(new Production("BLOCK", new ArrayList<>(Arrays.asList("{","DECLS","STMTS", "}"))));
         
         prods.add(new Production("DECLS", new ArrayList<>(Arrays.asList("DECL", "DECLS"))));
         prods.add(new Production("DECLS", new ArrayList<>(Arrays.asList("&"))));
@@ -136,10 +136,10 @@ public class AnalisadorSintatico {
         prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("break", ";"))));
         prods.add(new Production("STMT", new ArrayList<>(Arrays.asList("BLOCK"))));
         
-        prods.add(new Production("MATCHED_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL",")", "then", "MATCHED_IF", "else", "MATCHED_IF"))));
+        //prods.add(new Production("MATCHED_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL",")", "then", "MATCHED_IF", "else", "MATCHED_IF"))));
         
-        prods.add(new Production("OPEN_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL",")", "then", "STMT"))));
-        prods.add(new Production("OPEN_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL",")", "then", "MATCHED_IF", "else", "OPEN_IF"))));
+        //prods.add(new Production("OPEN_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL",")", "then", "STMT"))));
+        //prods.add(new Production("OPEN_IF", new ArrayList<>(Arrays.asList("if", "(", "BOOL",")", "then", "MATCHED_IF", "else", "OPEN_IF"))));
         
         prods.add(new Production("LOC", new ArrayList<>(Arrays.asList("id", "LOCS"))));
         
@@ -213,39 +213,53 @@ public class AnalisadorSintatico {
                 .tabela.get(AnalisadorLexico.TokenType.ERROR) + "\n";
         genTabelaDeAnalise();
         pilha.add(GRAMMAR.getInitialSymbol());
-        
-        while (!pilha.isEmpty()) {
-            doSintaticalAnalisis(lex.getNextToken(), pilha.get(pilha.size()-1));
+        String parserErros = "\nParser Erros: ";
+        while (!pilha.isEmpty() || !lex.hasTokens()) {
+            parserErros += doSintaticalAnalisis(lex.getNextToken());
         }
+        
+        status += parserErros;
         
         return status;
     }
     
     
-    public void doSintaticalAnalisis(String token, String simboloDePilha) {       
-    	Production p = tabelaDeAnalise.getM(token, simboloDePilha);
+    public String doSintaticalAnalisis(String token) {
     	String s;
-    	
-    	if (simboloDePilha.equals(token)) {
-            pilha.remove(pilha.size()-1);
-        } else if (GRAMMAR.getVt().contains(simboloDePilha)) {
-            // erro lexico
-        } 
-       else if (p == null) {
-         // Erro Sintatico
-      } else {
-//        Anda com a Transição 
-//        Coloca as produções na pilha
-    	  
-    	  pilha.remove(pilha.size()-1);
-    	  
-    	  ArrayList<String> simbols = p.getSentence();
-    	  
-    	  for(int i =simbols.size() -1; i > -1 ; i--) {
-    		  s = simbols.get(i);
-    		  pilha.add(s);
-    	  }  
-      }
+    	boolean loop = true;
+    	String errors = "";
+    	while(loop) {
+    		String simboloDePilha = pilha.get(pilha.size()-1);
+    		Production p = null;
+        	try {
+        		 p = tabelaDeAnalise.getM(token, simboloDePilha);
+        	} catch (Exception e) {}
+    		
+        	
+	    	if (simboloDePilha.equals(token)) {
+	            pilha.remove(pilha.size()-1);
+	            loop = false;
+	        } else if (GRAMMAR.getVt().contains(simboloDePilha)) {
+	            // erro lexico
+	        	break;
+	        } 
+	       else if (p == null) {
+	    	 return errors.concat("Error in: " + token);
+	      } else {
+	//        Anda com a Transição 
+	//        Coloca as produções na pilha
+	    	  
+	    	  pilha.remove(pilha.size()-1);
+	    	  
+	    	  ArrayList<String> simbols = p.getSentence();
+	    	  
+	    	  for(int i =simbols.size() -1; i > -1 ; i--) {
+	    		  s = simbols.get(i);
+	    		  pilha.add(s);
+	    	  }  
+	      	}
+    	}
+    	return errors;
     }
     
     private void genTabelaDeAnalise() {
@@ -258,8 +272,10 @@ public class AnalisadorSintatico {
     	
     	for (Production p : GRAMMAR.getProductions()) {
     		
-    		aux = (String[]) GRAMMAR.getSentenceFirst(p.getSentence()).toArray();
-    		aux2 = (String[]) GRAMMAR.getFollow(p.getNT()).toArray();
+    		Object[] objectArray = GRAMMAR.getSentenceFirst(p.getSentence()).toArray();
+    		aux = Arrays.asList(objectArray).toArray(new String[objectArray.length]);
+                Object[] objectArray2 =GRAMMAR.getFollow(p.getNT()).toArray();
+    		aux2 =  Arrays.asList(objectArray2).toArray(new String[objectArray2.length]);
     		
     		for(String s : aux) {
     			if(s != "&" ) {

@@ -475,7 +475,11 @@ public class AnalisadorLexico {
     }
 
     public String getNextToken() {
-        return tokenList.remove(0);
+    	if (hasTokens()) {
+    		return tokenList.remove(0);
+    	}
+    	
+    	return null;
     }
     
     public boolean hasTokens() {

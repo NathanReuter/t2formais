@@ -26,6 +26,6 @@ public class TabelaDeAnalise {
     }
     
     public Production getM(String x, String a ){
-    	return tabela.get(x).get(a);
+    	return tabela.get(a).get(x);
     }
 }
