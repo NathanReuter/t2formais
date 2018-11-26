@@ -25,4 +25,7 @@ public class TabelaDeAnalise {
         tabela.get(nt).put(t, p);
     }
     
+    public Production getM(String x, String a ){
+    	return tabela.get(x).get(a);
+    }
 }
