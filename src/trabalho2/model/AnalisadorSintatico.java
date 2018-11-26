@@ -215,7 +215,7 @@ public class AnalisadorSintatico {
         pilha.add(GRAMMAR.getInitialSymbol());
         
         while (!pilha.isEmpty()) {
-            doSintaticalAnalisis(lex.getNextToken(), pilha.get(0));
+            doSintaticalAnalisis(lex.getNextToken(), pilha.get(pilha.size()-1));
         }
         
         return status;
@@ -223,17 +223,29 @@ public class AnalisadorSintatico {
     
     
     public void doSintaticalAnalisis(String token, String simboloDePilha) {       
-        if (simboloDePilha.equals(token)) {
-            pilha.remove(0);
+    	Production p = tabelaDeAnalise.getM(token, simboloDePilha);
+    	String s;
+    	
+    	if (simboloDePilha.equals(token)) {
+            pilha.remove(pilha.size()-1);
         } else if (GRAMMAR.getVt().contains(simboloDePilha)) {
             // erro lexico
         } 
-//       else if (M[X, a] is an error entry) {
-//         // Erro lexico
-//      } else if (M[X,a] = X -+ Y1Y2 Yk) {
-//         Anda com a Transição 
-//         Coloca as produções na pilha
-//       }
+       else if (p == null) {
+         // Erro Sintatico
+      } else {
+//        Anda com a Transição 
+//        Coloca as produções na pilha
+    	  
+    	  pilha.remove(pilha.size()-1);
+    	  
+    	  ArrayList<String> simbols = p.getSentence();
+    	  
+    	  for(int i =simbols.size() -1; i > -1 ; i--) {
+    		  s = simbols.get(i);
+    		  pilha.add(s);
+    	  }  
+      }
     }
     
     private void genTabelaDeAnalise() {
